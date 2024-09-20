@@ -3,17 +3,18 @@ Section: graphics
 Priority: optional
 Maintainer: Shane McKee <shane.mckee@canonical.com>
 Build-Depends: debhelper-compat (= 13),
+ build-essential,
  cmake,
- pkg-config,
  libdrm-dev,
  libva-dev,
+ libvpl-dev,
+ libwayland-dev,
  libx11-dev,
  libx11-xcb-dev,
  libxcb-present-dev,
  libxcb-dri3-dev,
- libwayland-dev,
+ pkg-config,
  wayland-protocols,
- libvpl-dev,
 Standards-Version: 4.6.0
 Homepage: https://github.com/intel/libvpl-tools
 Vcs-Browser: https://github.com/intel/libvpl-tools
