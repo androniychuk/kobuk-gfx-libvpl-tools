@@ -6,13 +6,14 @@ Build-Depends: debhelper-compat (= 13),
  build-essential,
  cmake,
  libdrm-dev,
- libva-dev,
- libvpl-dev,
+ libpciaccess-dev,
+ libva-dev (>= 2.17),
+ libvpl2 (>= 2.11.0),
  libwayland-dev,
  libx11-dev,
  libx11-xcb-dev,
- libxcb-present-dev,
  libxcb-dri3-dev,
+ libxcb-present-dev,
  pkg-config,
  wayland-protocols,
 Standards-Version: 4.6.0
@@ -23,7 +24,9 @@ Rules-Requires-Root: no
 
 Package: libvpl-tools
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends:
+ libvpl2 (>= 2.11.0),
+ ${shlibs:Depends}, ${misc:Depends}
 Description: Intel oneVPL GPU Runtime -- shared library
  Intel® Video Processing Library (Intel® VPL) tools provide access to hardware
  accelerated video decode, encode, and processing capabilities on Intel® GPUs
