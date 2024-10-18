@@ -157,6 +157,9 @@ static void vppDefaultInitParams(sInputParams* pParams, sFiltersParam* pDefaultF
 
     pParams->b3dLut = false;
 
+    pParams->srParam.clear();
+    pParams->srParam.push_back(*pDefaultFiltersParam->pSRParam);
+
     return;
 
 } // void vppDefaultInitParams( sInputParams* pParams )
@@ -270,6 +273,7 @@ mfxU32 GetSurfaceSize(mfxU32 FourCC, mfxU32 width, mfxU32 height) {
             nbytes *= 2;
             break;
         case MFX_FOURCC_RGB4:
+        case MFX_FOURCC_BGR4:
             nbytes = width * height * 4;
         default:
             break;
@@ -330,6 +334,7 @@ int sample_vpp_main(int argc, char* argv[]) {
     sProcAmpParam defaultProcAmpParam = { 0.0, 1.0, 1.0, 0.0, VPP_FILTER_DISABLED };
     sDetailParam defaultDetailParam   = { 1, VPP_FILTER_DISABLED };
     sDenoiseParam defaultDenoiseParam = { 1, VPP_FILTER_DISABLED };
+    sSRParam defaultSRParam           = { 0, VPP_FILTER_DISABLED };
 #ifdef ENABLE_MCTF
     sMCTFParam defaultMctfParam;
     defaultMctfParam.mode                  = VPP_FILTER_DISABLED;
@@ -376,7 +381,8 @@ int sample_vpp_main(int argc, char* argv[]) {
                                           &defaultMirroringParam,
                                           &defaultColorfillParam,
                                           &defaultInVideoSignalInfoParam,
-                                          &defaultOutVideoSignalInfoParam };
+                                          &defaultOutVideoSignalInfoParam,
+                                          &defaultSRParam };
 
     //reset pointers to the all internal resources
     MSDK_ZERO_MEMORY(Resources);

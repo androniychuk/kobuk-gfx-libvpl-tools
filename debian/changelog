@@ -1,3 +1,10 @@
+libvpl-tools (1.2.0-0ubuntu1~24.04~ppa1) noble; urgency=medium
+
+  * Update version 1.2.0
+  * Build for noble 
+
+ -- Pavel Androniychuk <pavel.androniychuk@intel.com>  Fri, 18 Oct 2024 13:36:14 -0700
+
 libvpl-tools (1.1.0-0ubuntu1~24.10~ppa3) oracular; urgency=medium
 
   * Update build-deps and build flags

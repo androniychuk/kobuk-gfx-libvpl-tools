@@ -76,9 +76,18 @@ mfxStatus ConfigVideoEnhancementFilters(sInputParams* pParams,
     }
 #endif
     if (VPP_FILTER_ENABLED_CONFIGURED == pParams->frcParam[paramID].mode) {
-        auto frcConfig = pVppParam->AddExtBuffer<mfxExtVPPFrameRateConversion>();
-        frcConfig->Algorithm =
-            (mfxU16)pParams->frcParam[paramID].algorithm; //MFX_FRCALGM_DISTRIBUTED_TIMESTAMP;
+        if ((mfxU16)pParams->frcParam[paramID].algorithm != 0x8) {
+            auto frcConfig = pVppParam->AddExtBuffer<mfxExtVPPFrameRateConversion>();
+            frcConfig->Algorithm =
+                (mfxU16)pParams->frcParam[paramID].algorithm; //MFX_FRCALGM_DISTRIBUTED_TIMESTAMP;
+        }
+#ifdef ONEVPL_EXPERIMENTAL
+        else {
+            auto frcConfig       = pVppParam->AddExtBuffer<mfxExtVPPAIFrameInterpolation>();
+            frcConfig->FIMode    = MFX_AI_FRAME_INTERPOLATION_MODE_DEFAULT;
+            frcConfig->EnableScd = 1;
+        }
+#endif
     }
 
     if (VPP_FILTER_ENABLED_CONFIGURED == pParams->videoSignalInfoParam[paramID].mode) {
@@ -94,7 +103,12 @@ mfxStatus ConfigVideoEnhancementFilters(sInputParams* pParams,
         auto mirroringConfig  = pVppParam->AddExtBuffer<mfxExtVPPMirroring>();
         mirroringConfig->Type = pParams->mirroringParam[paramID].Type;
     }
-
+#ifdef ONEVPL_EXPERIMENTAL
+    if (VPP_FILTER_ENABLED_CONFIGURED == pParams->srParam[paramID].mode) {
+        auto srConfig    = pVppParam->AddExtBuffer<mfxExtVPPAISuperResolution>();
+        srConfig->SRMode = MFX_AI_SUPER_RESOLUTION_MODE_DEFAULT;
+    }
+#endif
     if (VPP_FILTER_ENABLED_CONFIGURED == pParams->colorfillParam[paramID].mode) {
         auto colorfillConfig = pVppParam->AddExtBuffer<mfxExtVPPColorFill>();
         colorfillConfig      = &pParams->colorfillParam[paramID];
