@@ -295,6 +295,7 @@ void vppPrintHelp(const char* strAppName, const char* strErrorMessage) {
     printf("   [-ssinr (id)]         - specify YUV nominal range for input surface.\n");
     printf("   [-dsinr (id)]         - specify YUV nominal range for output surface.\n\n");
     printf("   [-mirror (mode)]      - mirror image using specified mode.\n");
+    printf("   [-sr]                 - enable AI based super resolution.\n");
 
     printf("   [-n frames] - number of frames to VPP process\n\n");
 
@@ -402,6 +403,9 @@ mfxU32 Str2FourCC(char* strInput) {
     }
     else if (msdk_match_i(strInput, "rgb4")) {
         fourcc = MFX_FOURCC_RGB4;
+    }
+    else if (msdk_match_i(strInput, "bgr4")) {
+        fourcc = MFX_FOURCC_BGR4;
     }
 #if !(defined(_WIN32) || defined(_WIN64))
     else if (msdk_match_i(strInput, "rgbp")) {
@@ -802,6 +806,12 @@ mfxStatus vppParseResetPar(char* strInput[],
                 pParams->frcParam[paramID].mode      = VPP_FILTER_ENABLED_CONFIGURED;
                 pParams->frcParam[paramID].algorithm = MFX_FRCALGM_FRAME_INTERPOLATION;
             }
+#ifdef ONEVPL_EXPERIMENTAL
+            else if (msdk_match(strInput[i], "-frc:ai_interp")) {
+                pParams->frcParam[paramID].mode      = VPP_FILTER_ENABLED_CONFIGURED;
+                pParams->frcParam[paramID].algorithm = MFX_FRCALGM_AI_FRAME_INTERPOLATION;
+            }
+#endif
             //---------------------------------------------
             else if (msdk_match(strInput[i], "-pa_hue")) {
                 pParams->procampParam[paramID].mode = VPP_FILTER_ENABLED_CONFIGURED;
@@ -1109,6 +1119,11 @@ mfxStatus vppParseInputString(char* strInput[],
                 i++;
                 msdk_opt_read(strInput[i], pParams->mirroringParam[0].Type);
             }
+            else if (msdk_match(strInput[i], "-sr")) {
+                VAL_CHECK(1 + i == nArgNum);
+
+                pParams->srParam[0].mode = VPP_FILTER_ENABLED_CONFIGURED;
+            }
             else if (msdk_match(strInput[i], "-sw")) {
                 VAL_CHECK(1 + i == nArgNum);
                 i++;
@@ -1387,6 +1402,12 @@ mfxStatus vppParseInputString(char* strInput[],
                 pParams->frcParam[0].mode      = VPP_FILTER_ENABLED_CONFIGURED;
                 pParams->frcParam[0].algorithm = MFX_FRCALGM_FRAME_INTERPOLATION;
             }
+#ifdef ONEVPL_EXPERIMENTAL
+            else if (msdk_match(strInput[i], "-frc:ai_interp")) {
+                pParams->frcParam[0].mode      = VPP_FILTER_ENABLED_CONFIGURED;
+                pParams->frcParam[0].algorithm = MFX_FRCALGM_AI_FRAME_INTERPOLATION;
+            }
+#endif
             //---------------------------------------------
             else if (msdk_match(strInput[i], "-pa_hue")) {
                 pParams->procampParam[0].mode = VPP_FILTER_ENABLED_CONFIGURED;
